@@ -1,22 +1,30 @@
-import { ProductCard } from "../../common/productCard/ProductCard";
+import React, { useEffect, useState } from "react";
+import ItemList from "./ItemList";
+import { useParams } from "react-router-dom";
 
-export const ItemListContainer = ({ greeting }) => {
-  let nombreDeUsuario = "pepe";
-  const saludar = () => {
-    console.log(nombreDeUsuario);
-  };
+const ItemListContainer = () => {
+  const [products, setProducts] = useState([]);
+  const { categoryId } = useParams();
 
-  return (
-    <section>
-      <h2> {greeting} </h2>
+  useEffect(() => {
+    // Simulación de llamada asíncrona
+    const fetchProducts = () => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const data = [
+            { id: 1, name: "Perfume A", category: "hombre" },
+            { id: 2, name: "Perfume B", category: "mujer" },
+            { id: 3, name: "Perfume C", category: "unisex" },
+          ];
+          resolve(categoryId ? data.filter((p) => p.category === categoryId) : data);
+        }, 1000);
+      });
+    };
 
-      {console.log("hola")}
+    fetchProducts().then((res) => setProducts(res));
+  }, [categoryId]);
 
-      <h2>Mis productos</h2>
-
-      <ProductCard title="titulo 1" price="precio 1" />
-      <ProductCard title="titulo 2" price="precio 2" />
-      <ProductCard title="titulo 3" price="precio 3" />
-    </section>
-  );
+  return <ItemList products={products} />;
 };
+
+export default ItemListContainer;
